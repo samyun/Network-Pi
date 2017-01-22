@@ -31,6 +31,7 @@
 
     <!-- Dygraph JavaScript and CSS -->
     <script type="text/javascript" src="js/dygraph.js"></script>
+    <script type="text/javascript" src="js/synchronizer.js"></script>
     <link rel="stylesheet" href="css/dygraph.css" />
     <style>
       .dygraph-legend { text-align: right; background-color: transparent }
@@ -188,7 +189,7 @@
 
     <!-- Dygraphs JavaScript -->
     <script type="text/javascript">
-      new Dygraph(
+      g1 = new Dygraph(
         document.getElementById("mbps_graph"),
         "data/mbps.csv",
         {
@@ -197,10 +198,67 @@
           title: "Network Speeds (Megabits per Second)",
           legend: "always",
           showRangeSelector: true,
-          maxNumberWidth: 4
+          maxNumberWidth: 4,
+          underlayCallback: function(canvas, area, g) {
+
+            canvas.fillStyle = "rgba(255, 0, 0, 1.0)";
+
+            function highlight_period(x_start, x_end) {
+              var canvas_left_x = g.toDomXCoord(x_start);
+              var canvas_right_x = g.toDomXCoord(x_end);
+              var canvas_width = canvas_right_x - canvas_left_x;
+              canvas.fillRect(canvas_left_x, area.y, canvas_width, area.h);
+            }
+
+            var min_data_x = g.getValue(0,0);
+            var max_data_x = g.getValue(g.numRows()-1,0);
+
+            var w = min_data_x;
+            var x = 0;
+
+            while (w < max_data_x) {
+              var dl = g.getValue(x,1);
+              var ul = g.getValue(x,2);
+
+              if (dl == 0 && ul == 0){
+                var tmp = 1;
+                var still_zero = true;
+                while (still_zero){
+                  if (x + tmp > max_data_x){
+                    still_zero = false;
+                  }else{
+                    var tmp_dl = g.getValue(x + tmp,1);
+                    var tmp_ul = g.getValue(x + tmp,2);
+                    if (tmp_dl != 0 || tmp_ul != 0){
+                      still_zero = false;
+                    }else {
+                      tmp += 1;
+                    }
+                  }
+                }
+
+                if (tmp > 4){
+                  var start_x_highlight = w;
+                  var end_x_highlight = g.getValue(x + tmp,0);
+                  // make sure we don't try to plot outside the graph
+                  if (start_x_highlight < min_data_x) {
+                    start_x_highlight = min_data_x;
+                  }
+                  if (end_x_highlight > max_data_x) {
+                    end_x_highlight = max_data_x;
+                  }
+                  highlight_period(start_x_highlight,end_x_highlight);
+                }
+                x += tmp;
+              } else {
+                x += 1;
+              }
+              w = g.getValue(x,0);
+            }
+          }
         }
       )
-      new Dygraph(
+      g2 = new Dygraph(
         document.getElementById("kbps_graph"),
         "data/kbps.csv",
         {
@@ -209,10 +267,67 @@
           title: "Network Speeds (kbps)",
           legend: "always",
           showRangeSelector: true,
-          maxNumberWidth: 4
+          maxNumberWidth: 4,
+          underlayCallback: function(canvas, area, g) {
+
+            canvas.fillStyle = "rgba(255, 0, 0, 1.0)";
+
+            function highlight_period(x_start, x_end) {
+              var canvas_left_x = g.toDomXCoord(x_start);
+              var canvas_right_x = g.toDomXCoord(x_end);
+              var canvas_width = canvas_right_x - canvas_left_x;
+              canvas.fillRect(canvas_left_x, area.y, canvas_width, area.h);
+            }
+
+            var min_data_x = g.getValue(0,0);
+            var max_data_x = g.getValue(g.numRows()-1,0);
+
+            var w = min_data_x;
+            var x = 0;
+
+            while (w < max_data_x) {
+              var dl = g.getValue(x,1);
+              var ul = g.getValue(x,2);
+
+              if (dl == 0 && ul == 0){
+                var tmp = 1;
+                var still_zero = true;
+                while (still_zero){
+                  if (x + tmp > max_data_x){
+                    still_zero = false;
+                  }else{
+                    var tmp_dl = g.getValue(x + tmp,1);
+                    var tmp_ul = g.getValue(x + tmp,2);
+                    if (tmp_dl != 0 || tmp_ul != 0){
+                      still_zero = false;
+                    }else {
+                      tmp += 1;
+                    }
+                  }
+                }
+
+                if (tmp > 4){
+                  var start_x_highlight = w;
+                  var end_x_highlight = g.getValue(x + tmp,0);
+                  // make sure we don't try to plot outside the graph
+                  if (start_x_highlight < min_data_x) {
+                    start_x_highlight = min_data_x;
+                  }
+                  if (end_x_highlight > max_data_x) {
+                    end_x_highlight = max_data_x;
+                  }
+                  highlight_period(start_x_highlight,end_x_highlight);
+                }
+                x += tmp;
+              } else {
+                x += 1;
+              }
+              w = g.getValue(x,0);
+            }
+          }
         }
       )
-      new Dygraph(
+      g3 = new Dygraph(
         document.getElementById("bps_graph"),
         "data/bps.csv",
         {
@@ -221,9 +336,70 @@
           title: "Network Speeds (bps)",
           legend: "always",
           showRangeSelector: true,
-          maxNumberWidth: 5
+          maxNumberWidth: 5,
+          underlayCallback: function(canvas, area, g) {
+
+            canvas.fillStyle = "rgba(255, 0, 0, 1.0)";
+
+            function highlight_period(x_start, x_end) {
+              var canvas_left_x = g.toDomXCoord(x_start);
+              var canvas_right_x = g.toDomXCoord(x_end);
+              var canvas_width = canvas_right_x - canvas_left_x;
+              canvas.fillRect(canvas_left_x, area.y, canvas_width, area.h);
+            }
+
+            var min_data_x = g.getValue(0,0);
+            var max_data_x = g.getValue(g.numRows()-1,0);
+
+            var w = min_data_x;
+            var x = 0;
+
+            while (w < max_data_x) {
+              var dl = g.getValue(x,1);
+              var ul = g.getValue(x,2);
+
+              if (dl == 0 && ul == 0){
+                var tmp = 1;
+                var still_zero = true;
+                while (still_zero){
+                  if (x + tmp > max_data_x){
+                    still_zero = false;
+                  }else{
+                    var tmp_dl = g.getValue(x + tmp,1);
+                    var tmp_ul = g.getValue(x + tmp,2);
+                    if (tmp_dl != 0 || tmp_ul != 0){
+                      still_zero = false;
+                    }else {
+                      tmp += 1;
+                    }
+                  }
+                }
+
+                if (tmp > 4){
+                  var start_x_highlight = w;
+                  var end_x_highlight = g.getValue(x + tmp,0);
+                  // make sure we don't try to plot outside the graph
+                  if (start_x_highlight < min_data_x) {
+                    start_x_highlight = min_data_x;
+                  }
+                  if (end_x_highlight > max_data_x) {
+                    end_x_highlight = max_data_x;
+                  }
+                  highlight_period(start_x_highlight,end_x_highlight);
+                }
+                x += tmp;
+              } else {
+                x += 1;
+              }
+              w = g.getValue(x,0);
+            }
+          }
         }
       )
+      var sync = Dygraph.synchronize(g1, g2, g3, {
+        range: false
+      })
+
     </script>
 
 </body>
